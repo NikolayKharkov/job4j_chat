@@ -28,18 +28,19 @@ public class MessageController {
     }
 
     @PostMapping("/addMessage")
-    public ResponseEntity<Message> addMessage(@RequestParam("idRoom") int idRoom,
+    public ResponseEntity<Room> addMessage(@RequestParam("idRoom") int idRoom,
                                            @RequestBody Message message) {
         Optional<Room> room = roomService.findById(idRoom);
         Optional<User> user = userService.findById(message.getUser().getId());
         if (room.isEmpty() || user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        message.setRoom(room.get());
         message.setUser(user.get());
         message.setCreated(LocalDate.now());
+        Room roomBase = room.get();
+        roomBase.addMessage(message);
         return new ResponseEntity<>(
-                this.messageService.saveOrUpdate(message),
+                this.roomService.saveOrUpdate(roomBase),
                 HttpStatus.CREATED
         );
      }

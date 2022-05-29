@@ -15,10 +15,7 @@ public class Message {
     private String text;
     @Column(name = "created")
     private LocalDate created;
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -46,14 +43,6 @@ public class Message {
         this.created = created;
     }
 
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
     public User getUser() {
         return user;
     }
@@ -61,6 +50,7 @@ public class Message {
     public void setUser(User user) {
         this.user = user;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -74,12 +64,11 @@ public class Message {
         return id == message.id
                 && Objects.equals(text, message.text)
                 && Objects.equals(created, message.created)
-                && Objects.equals(room, message.room)
                 && Objects.equals(user, message.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, created, room, user);
+        return Objects.hash(id, text, created, user);
     }
 }

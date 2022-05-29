@@ -2,9 +2,7 @@ package ru.job4j.models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "rooms")
@@ -20,11 +18,11 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "rooms_messages",
             joinColumns = {@JoinColumn(name = "room_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "message_id", referencedColumnName = "id")})
-    private List<Message> messages = new ArrayList<>();
+    private Set<Message> messages = new HashSet<>();
 
     public int getId() {
         return id;
@@ -58,11 +56,11 @@ public class Room {
         this.user = user;
     }
 
-    public List<Message> getMessages() {
+    public Set<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(Set<Message> messages) {
         this.messages = messages;
     }
 
